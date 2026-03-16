@@ -80,7 +80,7 @@ margin:3px 0;
 
 <div class="app">
 
-<h3>Plywood Quote</h3>
+<h3>Plywood 3x6 Import</h3>
 
 <div class="row">Thickness (mm)<input id="thickness"></div>
 
@@ -184,10 +184,10 @@ document.getElementById("buyVnd").innerText=format(buyVnd)
 document.getElementById("sellVnd").innerText=format(sellVnd)
 
 let ppc=document.getElementById("profitPc")
-ppc.innerText=format(profitPc)
+ppc.innerText=format(profitPcvnd)
 
 let pt=document.getElementById("profitTotal")
-pt.innerText=format(profitTotal)
+pt.innerText=format(profitTotalvnd)
 
 if(profitTotal>=0){
 ppc.className="blue"
