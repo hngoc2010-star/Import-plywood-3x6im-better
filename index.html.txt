@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>Plywood Quote</title>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<style>
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,Arial;
+background:#f2f2f2;
+margin:0;
+display:flex;
+justify-content:center;
+padding:10px;
+}
+
+.app{
+width:100%;
+max-width:360px;
+background:white;
+padding:14px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+h3{
+text-align:center;
+margin:0 0 8px 0;
+font-size:18px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:4px 0;
+font-size:14px;
+}
+
+.row input{
+width:120px;
+padding:4px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:4px;
+text-align:right;
+}
+
+.result{
+margin-top:10px;
+font-size:14px;
+font-weight:600;
+}
+
+.result div{
+display:flex;
+justify-content:space-between;
+margin:3px 0;
+}
+
+.blue{color:#2563eb;}
+.red{color:#dc2626;}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<h3>Plywood Quote</h3>
+
+<div class="row">Thickness (mm)<input id="thickness"></div>
+
+<div class="row">Price DDP (USD/pc)<input id="price"></div>
+
+<div class="row">Bundles<input id="bundle"></div>
+
+<div class="row">Pcs/Bundle<input id="pcsBundle"></div>
+
+<div class="row">USD Rate<input id="usd"></div>
+
+<div class="row">Sell (VND/pc)<input id="sellpc"></div>
+
+<div class="result">
+
+<div>Total PCS <span id="pcs">0</span></div>
+
+<div>CBM / PC <span id="cbmPc">0</span></div>
+
+<div>CBM Container <span id="cbmTotal">0</span></div>
+
+<div>Total Buy USD <span id="buyUsd">0</span></div>
+
+<div>Total Buy VND <span id="buyVnd">0</span></div>
+
+<div>Total Sell VND <span id="sellVnd">0</span></div>
+
+<div>Profit / PC <span id="profitPc">0</span></div>
+
+<div>Profit Total <span id="profitTotal">0</span></div>
+
+</div>
+
+</div>
+
+<script>
+
+const WIDTH = 0.915
+const LENGTH = 1.83
+
+document.querySelectorAll("input").forEach(i=>{
+i.addEventListener("input",calc)
+i.addEventListener("blur",formatInput)
+})
+
+function number(id){
+return parseFloat(
+document.getElementById(id).value.replace(/,/g,'')
+)||0
+}
+
+function format(x){
+return Number(x).toLocaleString("en-US",{maximumFractionDigits:2})
+}
+
+function formatInput(e){
+
+let v=e.target.value.replace(/,/g,'')
+
+if(v!==""){
+e.target.value=Number(v).toLocaleString("en-US")
+}
+
+}
+
+function calc(){
+
+let thickness=number("thickness")
+let price=number("price")
+let bundle=number("bundle")
+let pcsBundle=number("pcsBundle")
+let usd=number("usd")
+let sellpc=number("sellpc")
+
+let pcs=bundle*pcsBundle
+
+let cbmPc=(thickness/1000)*WIDTH*LENGTH
+
+let cbmTotal=pcs*cbmPc
+
+let buyUsd=pcs*price
+
+let buyVnd=buyUsd*usd
+
+let sellVnd=pcs*sellpc
+
+let profitTotal=Math.round(sellVnd-buyVnd)
+
+let profitPc=pcs?profitTotal/pcs:0
+
+document.getElementById("pcs").innerText=format(pcs)
+
+document.getElementById("cbmPc").innerText=format(cbmPc)
+
+document.getElementById("cbmTotal").innerText=format(cbmTotal)
+
+document.getElementById("buyUsd").innerText=format(buyUsd)
+
+document.getElementById("buyVnd").innerText=format(buyVnd)
+
+document.getElementById("sellVnd").innerText=format(sellVnd)
+
+let ppc=document.getElementById("profitPc")
+ppc.innerText=format(profitPc)
+
+let pt=document.getElementById("profitTotal")
+pt.innerText=format(profitTotal)
+
+if(profitTotal>=0){
+ppc.className="blue"
+pt.className="blue"
+}else{
+ppc.className="red"
+pt.className="red"
+}
+
+}
+
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("service-worker.js")
+}
+
+</script>
+
+</body>
+
+</html>
